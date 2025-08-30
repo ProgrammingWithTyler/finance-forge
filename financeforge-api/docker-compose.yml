@@ -1,0 +1,16 @@
+services:
+  oracle-db:
+    image: container-registry.oracle.com/database/express:21.3.0-xe
+    container_name: financeforge-oracle
+    environment:
+      - ORACLE_PWD=FF_Secure_2024!
+      - ORACLE_CHARACTERSET=AL32UTF8
+    ports:
+      - "1521:1521"
+      - "5500:5500"  # Oracle Enterprise Manager
+    volumes:
+      - oracle_data:/opt/oracle/oradata
+    restart: unless-stopped
+
+volumes:
+  oracle_data:
