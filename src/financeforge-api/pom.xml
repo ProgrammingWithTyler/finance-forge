@@ -141,6 +141,7 @@
 				<artifactId>flyway-maven-plugin</artifactId>
 				<version>11.11.2</version>
 				<configuration>
+					<!-- Pick up env variables or fallback defaults -->
 					<url>${env.DB_URL}</url>
 					<user>${env.DB_USERNAME}</user>
 					<password>${env.DB_PASSWORD}</password>
@@ -150,8 +151,10 @@
 					<locations>
 						<location>classpath:db/migration</location>
 					</locations>
+					<createSchemas>false</createSchemas>
 				</configuration>
 			</plugin>
+
 
 		</plugins>
 	</build>

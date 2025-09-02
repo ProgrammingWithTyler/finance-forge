@@ -1,0 +1,59 @@
+services:
+  oracle-db:
+    image: container-registry.oracle.com/database/express:21.3.0-xe  # pull from Oracle registry
+    container_name: financeforge-oracle
+    ports:
+      - "1521:1521"    # Oracle listener
+    environment:
+      ORACLE_PWD: FF_Secure_2024!        # SYS/SYSTEM password
+      ORACLE_CHARACTERSET: AL32UTF8
+      ORACLE_PDB: XEPDB1
+    volumes:
+      - oracle-data:/opt/oracle/oradata    # persistent DB storage
+      - ./docker-initdb:/opt/oracle/scripts/setup  # place your init scripts here
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo 'SELECT 1 FROM dual;' | sqlplus -s system/$ORACLE_PWD@XEPDB1"]
+      interval: 30s
+      retries: 10
+
+  financeforge-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: financeforge-api
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+    environment:
+      DB_USERNAME: financeforge
+      DB_PASSWORD: FF_Secure_2024!
+      DB_URL: jdbc:oracle:thin:@oracle-db:1521/XEPDB1
+      DB_SCHEMA: financeforge
+    ports:
+      - "8080:8080"
+    command: ["java","-jar","/app/financeforge-api.jar"]
+
+volumes:
+  oracle-data:
+
+# services:
+#   oracle-db:
+#     image: gvenzl/oracle-xe:21.3.0
+#     container_name: financeforge-oracle
+#     environment:
+#       ORACLE_PASSWORD: FF_Secure_2024!
+#       ORACLE_ENABLE_XDB: "true"
+#       ORACLE_CHARACTERSET: AL32UTF8
+#     ports:
+#       - "1521:1521"
+#     volumes:
+#       - oracle-data:/opt/oracle/oradata
+#       - ./docker-init-scripts:/docker-entrypoint-initdb.d
+#     healthcheck:
+#       test: ["CMD", "lsnrctl", "status"]
+#       interval: 10s
+#       retries: 10
+#     restart: unless-stopped
+
+# volumes:
+#   oracle-data:
