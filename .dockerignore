@@ -1,0 +1,53 @@
+# Git and version control
+.git
+.gitignore
+.gitattributes
+
+# Documentation and README files
+README.md
+*.md
+docs/
+.vscode/
+.idea/
+
+# Docker files (don't copy into container)
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile*
+
+# Environment files (already handled by docker-compose)
+.env
+.env.*
+
+# Frontend build artifacts and dependencies (if building frontend separately)
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.next/
+
+# Database files and volumes
+oracle-data/
+docker-initdb/
+*.sql.bak
+*.dmp
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+temp/
+logs/
+
+# OS specific files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE specific files
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/

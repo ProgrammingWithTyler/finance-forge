@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- Project Information -->
@@ -19,7 +18,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.5</version>
-		<relativePath/>
+		<relativePath />
 	</parent>
 
 	<!-- Java 21 Configuration -->
@@ -82,6 +81,19 @@
 			<version>3.0.0</version>
 		</dependency>
 
+		<!-- Flyway DB Migration Tool -->
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>11.11.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-oracle</artifactId>
+			<version>11.11.2</version>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- H2 Database (for testing without Oracle) -->
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -120,6 +132,20 @@
 				<version>3.1.2</version>
 				<configuration>
 					<argLine>--enable-preview</argLine>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>11.11.2</version>
+				<configuration>
+					<url>${DB_URL}</url>
+					<user>${DB_USERNAME}</user>
+					<password>${DB_PASSWORD}</password>
+					<schemas>${DB_SCHEMA}</schemas>
+					<createSchemas>false</createSchemas>
+					<locations>filesystem:src/main/resources/db/migration</locations>
 				</configuration>
 			</plugin>
 		</plugins>

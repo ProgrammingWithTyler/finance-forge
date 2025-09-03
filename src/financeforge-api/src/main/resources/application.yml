@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: financeforge-api
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: ${DB_URL:jdbc:oracle:thin:@oracle-db:1521/XEPDB1}
+    username: ${DB_USERNAME:financeforge}
+    password: ${DB_PASSWORD:FinanceForge2025!}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      validation-timeout: 5000
+      leak-detection-threshold: 60000
+  jpa:
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.OracleDialect
+        format_sql: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+logging:
+  level:
+    com.financeforge: DEBUG
+    org.springframework.web: INFO
