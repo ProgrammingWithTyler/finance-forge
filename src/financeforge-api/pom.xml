@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- Project Information -->
@@ -19,7 +18,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.5.5</version>
-		<relativePath/>
+		<relativePath />
 	</parent>
 
 	<!-- Java 21 Configuration -->
@@ -141,21 +140,14 @@
 				<artifactId>flyway-maven-plugin</artifactId>
 				<version>11.11.2</version>
 				<configuration>
-					<!-- Pick up env variables or fallback defaults -->
-					<url>${env.DB_URL}</url>
-					<user>${env.DB_USERNAME}</user>
-					<password>${env.DB_PASSWORD}</password>
-					<schemas>
-						<schema>${env.DB_SCHEMA}</schema>
-					</schemas>
-					<locations>
-						<location>classpath:db/migration</location>
-					</locations>
+					<url>${DB_URL}</url>
+					<user>${DB_USERNAME}</user>
+					<password>${DB_PASSWORD}</password>
+					<schemas>${DB_SCHEMA}</schemas>
 					<createSchemas>false</createSchemas>
+					<locations>filesystem:src/main/resources/db/migration</locations>
 				</configuration>
 			</plugin>
-
-
 		</plugins>
 	</build>
 </project>

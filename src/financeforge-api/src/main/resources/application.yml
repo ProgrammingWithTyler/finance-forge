@@ -2,163 +2,39 @@ spring:
   application:
     name: financeforge-api
   profiles:
-    active: dev
-
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-
+    url: ${DB_URL:jdbc:oracle:thin:@oracle-db:1521/XEPDB1}
+    username: ${DB_USERNAME:financeforge}
+    password: ${DB_PASSWORD:FinanceForge2025!}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      validation-timeout: 5000
+      leak-detection-threshold: 60000
   jpa:
     hibernate:
-      ddl-auto: none          # Flyway manages schema
+      ddl-auto: none
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.OracleDialect
-
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-    validate-on-migrate: true
-    locations: classpath:db/migration
-    schemas: ${DB_SCHEMA}
-    default-schema: ${DB_SCHEMA:FINANCEFORGE}
-    create-schemas: false
-    url: ${DB_URL:jdbc:oracle:thin:@localhost:1521/XEPDB1}
-    user: ${DB_USERNAME:financeforge}
-    password: ${DB_PASSWORD:FF_Secure_2024!}
-
-
+        format_sql: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
 server:
   port: 8080
   servlet:
     context-path: /api/v1
-
 logging:
   level:
-    org.flywaydb: DEBUG
     com.financeforge: DEBUG
     org.springframework.web: INFO
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    com.zaxxer.hikari: DEBUG
-  pattern:
-    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics,datasource
-  endpoint:
-    health:
-      show-details: when-authorized
-
----
-spring:
-  config:
-    activate:
-      on-profile: prod
-  jpa:
-    show-sql: false
-  flyway:
-    enabled: true
-  logging:
-    level:
-      com.financeforge: INFO
-      org.hibernate.SQL: WARN
-
-
-## FinanceForge Application Configuration
-#spring:
-#  application:
-#    name: financeforge-api
-#  profiles:
-#    active: dev
-#
-#  datasource:
-#    driver-class-name: oracle.jdbc.OracleDriver
-#    url: ${DB_URL}
-#    username: ${DB_USERNAME}
-#    password: ${DB_PASSWORD}
-#    hikari:
-#      maximum-pool-size: 10
-#      minimum-idle: 2
-#      connection-timeout: 30000
-#      idle-timeout: 600000
-#      max-lifetime: 1800000
-#      leak-detection-threshold: 60000
-#
-#  jpa:
-#    hibernate:
-#      ddl-auto: none
-#    show-sql: true
-#    properties:
-#      hibernate:
-#        dialect: org.hibernate.dialect.OracleDialect
-#        format_sql: true
-#
-#  flyway:
-#    enabled: true
-#    baseline-on-migrate: true
-#    validate-on-migrate: true
-#    locations: classpath:db/migration
-#    schemas: ${DB_SCHEMA}
-#    default-schema: ${DB_SCHEMA}
-#    create-schemas: false
-#    url: ${DB_URL}
-#    user: ${DB_USERNAME}
-#    password: ${DB_PASSWORD}
-#
-#server:
-#  port: 8080
-#  servlet:
-#    context-path: /api/v1
-#
-#logging:
-#  level:
-#    org.flywaydb: DEBUG
-#    com.financeforge: DEBUG
-#    org.springframework.web: INFO
-#    org.hibernate.SQL: DEBUG
-#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-#    com.zaxxer.hikari: DEBUG
-#  pattern:
-#    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
-#
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: health,info,metrics,datasource
-#  endpoint:
-#    health:
-#      show-details: when-authorized
-#
-#---
-#
-#spring:
-#  config:
-#    activate:
-#      on-profile: dev
-#  jpa:
-#    show-sql: true
-#  flyway:
-#    enabled: true
-#
-#---
-#
-#spring:
-#  config:
-#    activate:
-#      on-profile: prod
-#  jpa:
-#    show-sql: false
-#  flyway:
-#    enabled: true
-#  logging:
-#    level:
-#      com.financeforge: INFO
-#      org.hibernate.SQL: WARN
