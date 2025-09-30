@@ -140,6 +140,7 @@
 				<artifactId>flyway-maven-plugin</artifactId>
 				<version>11.11.2</version>
 				<configuration>
+					<cleanDisabled>false</cleanDisabled>
 					<url>${DB_URL}</url>
 					<user>${DB_USERNAME}</user>
 					<password>${DB_PASSWORD}</password>
