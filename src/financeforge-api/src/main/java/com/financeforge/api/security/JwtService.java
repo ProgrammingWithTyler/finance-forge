@@ -96,7 +96,7 @@ public class JwtService {
      */
     public String generateRefreshToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("type", "refresh");  // ✅ FIXED: Was "access", now "refresh"
+        claims.put("type", "refresh");
         return generateToken(claims, userDetails.getUsername(), refreshTokenExpiration);
     }
 
@@ -140,7 +140,7 @@ public class JwtService {
      * @throws io.jsonwebtoken.JwtException if the token is invalid or expired
      */
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);  // ✅ FIXED: Added semicolon
+        return extractClaim(token, Claims::getSubject);
     }
 
     /**
@@ -153,7 +153,7 @@ public class JwtService {
      * @throws io.jsonwebtoken.JwtException if the token is invalid
      */
     public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);  // ✅ ADDED: Missing method
+        return extractClaim(token, Claims::getExpiration);
     }
 
     /**

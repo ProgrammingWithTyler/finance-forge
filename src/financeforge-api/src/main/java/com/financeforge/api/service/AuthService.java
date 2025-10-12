@@ -127,34 +127,41 @@ public class AuthService {
      */
     @Transactional
     public AuthResponse register(RegisterRequest request) {
-        log.info("Registeration attempt for username: {}", request.username());
+        log.info("Registration attempt for username: {}", request.username());
 
         // 1. Validate password complexity
         if (!request.hasValidPasswordComplexity()) {
             log.warn("Registration failed for {}: weak password", request.username());
             throw new IllegalArgumentException(
-                "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one special character"
+                "Password must contain at least one uppercase letter, one lowercase letter, " +
+                    "one digit, and one special character"
             );
         }
 
         // 2. Check username doesn't exist
         if (userRepository.findByUsername(request.username()).isPresent()) {
-            log.warn("Registration failed for '{}' already registered", request.email());
-            throw new IllegalArgumentException("Email is already registered");
+            log.warn("Registration failed: username '{}' already taken", request.username());
+            throw new IllegalStateException("Username is already taken");
+        }
+
+        // 3. Check email doesn't exist
+        if (userRepository.findByEmail(request.email()).isPresent()) {
+            log.warn("Registration failed: email '{}' already registered", request.email());
+            throw new IllegalStateException("Email is already registered");
         }
 
         // 4. Hash password with BCrypt (CRITICAL: Before sending to DB)
-        String hashPassword = passwordEncoder.encode(request.password());
+        String hashedPassword = passwordEncoder.encode(request.password());
         log.debug("Password hashed successfully for user: {}", request.username());
 
         // 5. Create user entity
         User user = User.builder()
             .username(request.username())
             .email(request.email())
-            .passwordHash(hashPassword)
+            .passwordHash(hashedPassword)
             .firstName(request.firstName())
             .lastName(request.lastName())
-            .status(UserStatus.PENDING)
+            .status(UserStatus.ACTIVE) // TODO: Will change PENDING status back when email verification is done
             .createdBy("REGISTRATION")
             .build();
 
@@ -176,13 +183,13 @@ public class AuthService {
 
         log.debug("JWT tokens generated for user: {}", user.getUsername());
 
-        // 8. build response
+        // 8. Build response
         UserInfo userInfo = new UserInfo(
-          user.getId(),
-          user.getUsername(),
-          user.getEmail(),
-          user.getFirstName(),
-          user.getLastName()
+            user.getId(),
+            user.getUsername(),
+            user.getEmail(),
+            user.getFirstName(),
+            user.getLastName()
         );
 
         return new AuthResponse(accessToken, refreshToken, expiresIn, userInfo);
@@ -378,6 +385,7 @@ public class AuthService {
         return new CurrentUserResponse(
             user.getId(),
             user.getUsername(),
+            user.getEmail(),
             user.getFirstName(),
             user.getLastName(),
             user.getStatus().name(),

@@ -19,8 +19,12 @@ public class UserRowMapper implements RowMapper<User> {
                 .firstName(rs.getString("FIRST_NAME"))
                 .lastName(rs.getString("LAST_NAME"))
                 .status(UserStatus.valueOf(rs.getString("STATUS")))
-                .createdAt(rs.getTimestamp("CREATED_AT").toLocalDateTime())
-                .updatedAt(rs.getTimestamp("UPDATED_AT").toLocalDateTime())
+            .createdAt(rs.getTimestamp("CREATED_AT") != null
+                ? rs.getTimestamp("CREATED_AT").toLocalDateTime()
+                : null)
+            .updatedAt(rs.getTimestamp("UPDATED_AT") != null
+                ? rs.getTimestamp("UPDATED_AT").toLocalDateTime()
+                : null)
                 .createdBy(rs.getString("CREATED_BY"))
                 .updatedBy(rs.getString("UPDATED_BY"))
                 .build();
