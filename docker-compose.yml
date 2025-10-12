@@ -31,9 +31,13 @@ services:
     environment:
       DB_USERNAME: ${DB_USERNAME}
       DB_PASSWORD: ${DB_PASSWORD}
-      DB_URL: ${DB_URL}
+      # Override DB_URL for Docker networking
+      DB_URL: jdbc:oracle:thin:@oracle-db:1521/XEPDB1
       DB_SCHEMA: ${DB_SCHEMA}
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS}
+      JWT_REFRESH_EXPIRATION_MS: ${JWT_REFRESH_EXPIRATION_MS}
     ports:
       - "8080:8080"
     restart: unless-stopped

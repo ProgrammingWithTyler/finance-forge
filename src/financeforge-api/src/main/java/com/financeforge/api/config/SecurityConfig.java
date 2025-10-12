@@ -1,7 +1,7 @@
 package com.financeforge.api.config;
 
-import com.financeforge.api.security.CustomUserDetailsService;
-import com.financeforge.api.security.JwtAuthenticationFilter;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,7 +21,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.List;
+import com.financeforge.api.security.CustomUserDetailsService;
+import com.financeforge.api.security.JwtAuthenticationFilter;
 
 /**
  * Spring Security configuration for JWT-based authentication.
@@ -93,7 +94,7 @@ import java.util.List;
  */
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity  // Enables @PreAuthorize, @Secured annotations
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -106,8 +107,8 @@ public class SecurityConfig {
      * @param userDetailsService service for loading user details
      */
     public SecurityConfig(
-        JwtAuthenticationFilter jwtAuthenticationFilter,
-        CustomUserDetailsService userDetailsService
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            CustomUserDetailsService userDetailsService
     ) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userDetailsService = userDetailsService;
@@ -147,48 +148,37 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-            // Disable CSRF (we're using JWT, not cookies)
-            .csrf(AbstractHttpConfigurer::disable)
-
-            // Configure CORS
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-
-            // Configure authorization rules
-            .authorizeHttpRequests(auth -> auth
-                // Public authentication endpoints
+                .csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/api/v1/auth/register",
-                    "/api/v1/auth/login",
-                    "/api/v1/auth/refresh",
-                    "/api/v1/auth/health"
+                        "/auth/register",
+                        "/auth/login",
+                        "/auth/refresh",
+                        "/auth/health"
                 ).permitAll()
-
                 // Swagger UI and API docs (public for development)
                 .requestMatchers(
-                    "/swagger-ui/**",
-                    "/v3/api-docs/**",
-                    "/swagger-resources/**",
-                    "/webjars/**"
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-resources/**",
+                        "/webjars/**"
                 ).permitAll()
-
                 // All other requests require authentication
                 .anyRequest().authenticated()
-            )
-
-            // Configure session management (stateless for JWT)
-            .sessionManagement(session -> session
+                )
+                // Configure session management (stateless for JWT)
+                .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-
-            // Set custom authentication provider
-            .authenticationProvider(authenticationProvider())
-
-            // Add JWT filter before UsernamePasswordAuthenticationFilter
-            .addFilterBefore(
-                jwtAuthenticationFilter,
-                UsernamePasswordAuthenticationFilter.class
-            )
-            .build();
+                )
+                // Set custom authentication provider
+                .authenticationProvider(authenticationProvider())
+                // Add JWT filter before UsernamePasswordAuthenticationFilter
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                )
+                .build();
     }
 
     /**
@@ -257,7 +247,7 @@ public class SecurityConfig {
      * @return configured authentication provider
      */
     @Bean
-    @SuppressWarnings("deprecation")  // Suppress until Spring Security 7 provides alternative
+    @SuppressWarnings("deprecation") // Suppress until Spring Security 7 provides alternative
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);

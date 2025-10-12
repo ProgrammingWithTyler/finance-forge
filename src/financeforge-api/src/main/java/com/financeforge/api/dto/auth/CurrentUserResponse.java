@@ -13,11 +13,12 @@ import java.time.LocalDateTime;
 public record CurrentUserResponse(
     Long id,
     String username,
+    String email,
     String firstName,
     String lastName,
     String status,
     LocalDateTime createdAt,
-    LocalDateTime lastLogin
+    LocalDateTime updatedAt
 ) {
     public String getFullName() {
         return firstName + " " + lastName;
