@@ -38,3 +38,14 @@ logging:
   level:
     com.financeforge: DEBUG
     org.springframework.web: INFO
+
+# JWT Configuration
+jwt:
+  secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+  expiration: 900000
+  refresh-expiration: 604800000
+
+# Explanation:
+# jwt.secret = 256-bit secret key (CHANGE THIS IN PRODUCTION!)
+# jwt.expiration = 15 minutes in milliseconds (900,000 ms)
+# jwt.refresh-expiration = 7 days in milliseconds (604,800,000 ms)

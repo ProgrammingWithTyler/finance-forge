@@ -22,8 +22,8 @@ CREATE TABLE users (
     -- Audit fields
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    created_by VARCHAR2(50) DEFAULT 'SYSTEM' NOT NULL,
-    updated_by VARCHAR2(50) DEFAULT 'SYSTEM' NOT NULL,
+    created_by VARCHAR2(50) NOT NULL,
+    updated_by VARCHAR2(50) NOT NULL,
     -- Constraints
     CONSTRAINT pk_users PRIMARY KEY (id),
     CONSTRAINT uk_users_username UNIQUE (username),
